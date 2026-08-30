@@ -16,6 +16,27 @@ sidebarBtn.addEventListener("click", function () { elementToggleFunc(sidebar); }
 
 
 
+// email copy to clipboard functionality
+const emailCopyBtn = document.querySelector("[data-copy-email]");
+
+if (emailCopyBtn) {
+  emailCopyBtn.addEventListener("click", function () {
+    const email = this.dataset.copyEmail;
+    navigator.clipboard.writeText(email).then(function () {
+      // Visual feedback - change text temporarily
+      const originalText = emailCopyBtn.textContent;
+      emailCopyBtn.textContent = "Copied!";
+      setTimeout(function () {
+        emailCopyBtn.textContent = originalText;
+      }, 2000);
+    }).catch(function (err) {
+      console.error("Failed to copy email: ", err);
+    });
+  });
+}
+
+
+
 // testimonials variables
 const testimonialsItem = document.querySelectorAll("[data-testimonials-item]");
 const modalContainer = document.querySelector("[data-modal-container]");
@@ -176,6 +197,7 @@ document.addEventListener("keydown", function (event) {
 const form = document.querySelector("[data-form]");
 const formInputs = document.querySelectorAll("[data-form-input]");
 const formBtn = document.querySelector("[data-form-btn]");
+const formStatus = document.querySelector("[data-form-status]");
 
 // add event to all form input field
 for (let i = 0; i < formInputs.length; i++) {
@@ -190,6 +212,57 @@ for (let i = 0; i < formInputs.length; i++) {
 
   });
 }
+
+// contact form submission with Web3Forms
+form.addEventListener("submit", async function (event) {
+  event.preventDefault();
+
+  // Clear previous status message
+  formStatus.textContent = "";
+  formStatus.classList.remove("active");
+
+  // Disable button and show "Sending..."
+  const originalButtonText = formBtn.querySelector("span").textContent;
+  formBtn.setAttribute("disabled", "");
+  formBtn.querySelector("span").textContent = "Sending...";
+
+  try {
+    // Create FormData from the form
+    const formData = new FormData(this);
+
+    // Send to Web3Forms
+    const response = await fetch("https://api.web3forms.com/submit", {
+      method: "POST",
+      body: formData
+    });
+
+    if (response.ok) {
+      // Success response
+      formStatus.textContent = "Message sent successfully!";
+      formStatus.classList.add("active");
+      
+      // Clear form
+      form.reset();
+      
+      // Disable button until form is filled again
+      formBtn.setAttribute("disabled", "");
+    } else {
+      // Error response from server
+      formStatus.textContent = "Something went wrong. Please try again.";
+      formStatus.classList.add("active");
+      formBtn.removeAttribute("disabled");
+    }
+  } catch (error) {
+    // Network error or other issues
+    formStatus.textContent = "Unable to send your message. Please check your connection and try again.";
+    formStatus.classList.add("active");
+    formBtn.removeAttribute("disabled");
+    console.error("Form submission error:", error);
+  }
+
+  // Restore button text
+  formBtn.querySelector("span").textContent = originalButtonText;
+});
 
 
 
