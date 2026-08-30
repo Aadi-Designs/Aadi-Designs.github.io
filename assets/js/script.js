@@ -240,10 +240,10 @@ form.addEventListener("submit", async function (event) {
       // Success response
       formStatus.textContent = "Message sent successfully!";
       formStatus.classList.add("active");
-      
+
       // Clear form
       form.reset();
-      
+
       // Disable button until form is filled again
       formBtn.setAttribute("disabled", "");
     } else {
@@ -262,6 +262,13 @@ form.addEventListener("submit", async function (event) {
 
   // Restore button text
   formBtn.querySelector("span").textContent = originalButtonText;
+
+  // Hide the message after 10 seconds
+  clearTimeout(formStatus.hideTimer);
+  formStatus.hideTimer = setTimeout(function () {
+    formStatus.classList.remove("active");
+    formStatus.textContent = "";
+  }, 10000);
 });
 
 
