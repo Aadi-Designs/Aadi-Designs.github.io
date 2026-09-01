@@ -1469,7 +1469,7 @@ textarea.form-input::-webkit-resizer { display: none; }
   width: fit-content;
   max-width: 100%;
   padding: 10px 14px;
-  margin-bottom: 15px;
+  margin: 0 auto 15px auto;
   border-radius: 10px;
   font-size: var(--fs-6);
   text-align: center;
@@ -1481,7 +1481,7 @@ textarea.form-input::-webkit-resizer { display: none; }
 }
 
 .form-status.active {
-  display: inline-block;
+  display: block;
   animation: slideIn 0.3s ease-out;
 }
 
